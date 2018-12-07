@@ -7,6 +7,13 @@
 
 #ifndef _Included_jniUtils_FfempegUtils
 #define _Included_jniUtils_FfempegUtils
+#include <android/log.h>
+#include "jniUtils_FfempegUtils.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include "libavcodec/avcodec.h"
+#include "libavformat/avformat.h"
+#include "libavfilter/avfilter.h"
 #ifdef __cplusplus
 
 
@@ -17,16 +24,10 @@ extern "C" {
  * Method:    runFfempeg
  * Signature: ()V
  */
-#include <android/log.h>
-#include "jniUtils_FfempegUtils.h"
-#include <stdlib.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
-#include "libavfilter/avfilter.h"
+
 JNIEXPORT void JNICALL Java_jniUtils_FfempegUtils_runFfempeg
   (JNIEnv *jniEnv, jclass jclass){
+    __android_log_print(ANDROID_LOG_ERROR,"1111","222222");
 char info[40000] = {0};
     av_muxer_iterate(NULL);
     const AVCodec *c_temp = av_codec_iterate(NULL);
@@ -50,6 +51,7 @@ char info[40000] = {0};
        sprintf(info,"%s[%10s]\n",info,c_temp->name);
        c_temp=c_temp->next;
     }
+    __android_log_print(ANDROID_LOG_ERROR,"1111","222222");
 __android_log_print(ANDROID_LOG_INFO,"myTag","info:\n%s",info);
 
 
