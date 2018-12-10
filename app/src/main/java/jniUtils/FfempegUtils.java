@@ -6,13 +6,17 @@ package jniUtils;
 
 public class FfempegUtils {
 
-    {
+    static {
+        System.loadLibrary("swscale");
+        System.loadLibrary("avdevice");
+        System.loadLibrary("avfilter");
+        System.loadLibrary("swresample");
         System.loadLibrary("avcodec");
         System.loadLibrary("avformat");
         System.loadLibrary("avutil");
         System.loadLibrary("ffempeg");
     }
 
-    public static native void  runFfempeg();
+    public static native void runFfempeg();
 
 }

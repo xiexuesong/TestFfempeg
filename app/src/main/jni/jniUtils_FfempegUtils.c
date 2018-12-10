@@ -7,6 +7,7 @@
 
 #ifndef _Included_jniUtils_FfempegUtils
 #define _Included_jniUtils_FfempegUtils
+
 #include <android/log.h>
 #include "jniUtils_FfempegUtils.h"
 #include <stdlib.h>
@@ -14,6 +15,7 @@
 #include "libavcodec/avcodec.h"
 #include "libavformat/avformat.h"
 #include "libavfilter/avfilter.h"
+
 #ifdef __cplusplus
 
 
@@ -23,39 +25,17 @@ extern "C" {
  * Class:     jniUtils_FfempegUtils
  * Method:    runFfempeg
  * Signature: ()V
+ *
+ *logcat  只能输出error 和 info
  */
 
 JNIEXPORT void JNICALL Java_jniUtils_FfempegUtils_runFfempeg
-  (JNIEnv *jniEnv, jclass jclass){
-    __android_log_print(ANDROID_LOG_ERROR,"1111","222222");
-char info[40000] = {0};
-    av_muxer_iterate(NULL);
-    const AVCodec *c_temp = av_codec_iterate(NULL);
-    while(c_temp != NULL){
-       if(c_temp->decode!=NULL){
-          sprintf(info,"%s[Dec]",info);
-       }else{
-          sprintf(info,"%s[Enc]",info);
-       }
-       switch(c_temp->type){
-        case AVMEDIA_TYPE_VIDEO:
-          sprintf(info,"%s[Video]",info);
-          break;
-        case AVMEDIA_TYPE_AUDIO:
-          sprintf(info,"%s[Audio]",info);
-          break;
-        default:
-          sprintf(info,"%s[Other]",info);
-          break;
-       }
-       sprintf(info,"%s[%10s]\n",info,c_temp->name);
-       c_temp=c_temp->next;
-    }
-    __android_log_print(ANDROID_LOG_ERROR,"1111","222222");
-__android_log_print(ANDROID_LOG_INFO,"myTag","info:\n%s",info);
-
-
-  }
+        (JNIEnv *jniEnv, jclass jclass) {
+    char info[10000] = {0};
+    sprintf(info, "%s\n", avcodec_configuration());
+    __android_log_print(ANDROID_LOG_ERROR,"tag","info:\n%s",avcodec_configuration());
+    //__android_log_print(ANDROID_LOG_INFO, "myTag", "info:\n%s", info);
+}
 
 #ifdef __cplusplus
 }
