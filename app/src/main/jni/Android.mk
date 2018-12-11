@@ -46,7 +46,11 @@ include $(PREBUILT_SHARED_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := ffempeg
-LOCAL_SRC_FILES := jniUtils_FfempegUtils.c
+LOCAL_SRC_FILES := jniUtils_FfempegUtils.c \
+                    cmdutils.c \
+                    ffmpeg.c \
+                    ffmpeg_opt.c \
+                    ffmpeg_filter.c
 LOCAL_C_INCLUDES := D:/FFmpeg-n4.0.1/FFmpeg-n4.0.1
 LOCAL_LDLIBS := -llog -lz -ldl
 LOCAL_SHARED_LIBRARIES := libavutil libavformat libavcodec libavfilter libavdevice libswresample libswscale

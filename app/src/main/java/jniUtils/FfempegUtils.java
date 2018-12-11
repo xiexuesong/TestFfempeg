@@ -17,6 +17,6 @@ public class FfempegUtils {
         System.loadLibrary("ffempeg");
     }
 
-    public static native void runFfempeg();
+    public static native int runFfempeg(String[] commonds);
 
 }

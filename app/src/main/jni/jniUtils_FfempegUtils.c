@@ -10,11 +10,8 @@
 
 #include <android/log.h>
 #include "jniUtils_FfempegUtils.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include "libavcodec/avcodec.h"
-#include "libavformat/avformat.h"
-#include "libavfilter/avfilter.h"
+#include "android_log.h"
+#include "ffmpeg.h"
 
 #ifdef __cplusplus
 
@@ -29,12 +26,20 @@ extern "C" {
  *logcat  只能输出error 和 info
  */
 
-JNIEXPORT void JNICALL Java_jniUtils_FfempegUtils_runFfempeg
-        (JNIEnv *jniEnv, jclass jclass) {
-    char info[10000] = {0};
-    sprintf(info, "%s\n", avcodec_configuration());
-    __android_log_print(ANDROID_LOG_ERROR,"tag","info:\n%s",avcodec_configuration());
-    //__android_log_print(ANDROID_LOG_INFO, "myTag", "info:\n%s", info);
+JNIEXPORT jint JNICALL Java_jniUtils_FfempegUtils_runFfempeg
+        (JNIEnv *env, jclass jclass , jobjectArray commands) {
+//FFmpeg av_log() callback
+    int argc = (*env)->GetArrayLength(env, commands);
+    char *argv[argc];
+
+    LOGD("Kit argc %d\n", argc);
+    int i;
+    for (i = 0; i < argc; i++) {
+        jstring js = (jstring) (*env)->GetObjectArrayElement(env, commands, i);
+        argv[i] = (char*) (*env)->GetStringUTFChars(env, js, 0);
+        LOGD("Kit argv %s\n", argv[i]);
+    }
+    return runFfempeg(argc, argv);
 }
 
 #ifdef __cplusplus
