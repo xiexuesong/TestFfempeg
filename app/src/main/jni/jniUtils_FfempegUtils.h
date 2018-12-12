@@ -15,6 +15,8 @@ extern "C" {
 JNIEXPORT void JNICALL Java_jniUtils_FfempegUtils_runFfempeg
   (JNIEnv *, jclass);
 
+void progress(char* line);
+
 #ifdef __cplusplus
 }
 #endif

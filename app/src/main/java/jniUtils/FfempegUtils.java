@@ -18,5 +18,6 @@ public class FfempegUtils {
     }
 
     public static native int runFfempeg(String[] commonds);
+    public static native String getCallBackProgressLog();
 
 }

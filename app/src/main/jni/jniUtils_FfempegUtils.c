@@ -9,7 +9,6 @@
 #define _Included_jniUtils_FfempegUtils
 
 #include <android/log.h>
-#include "jniUtils_FfempegUtils.h"
 #include "android_log.h"
 #include "ffmpeg.h"
 
@@ -26,8 +25,12 @@ extern "C" {
  *logcat  只能输出error 和 info
  */
 
+void progress(char* line){
+
+}
+
 JNIEXPORT jint JNICALL Java_jniUtils_FfempegUtils_runFfempeg
-        (JNIEnv *env, jclass jclass , jobjectArray commands) {
+        (JNIEnv *env, jclass jclass, jobjectArray commands) {
 //FFmpeg av_log() callback
     int argc = (*env)->GetArrayLength(env, commands);
     char *argv[argc];
@@ -36,11 +39,12 @@ JNIEXPORT jint JNICALL Java_jniUtils_FfempegUtils_runFfempeg
     int i;
     for (i = 0; i < argc; i++) {
         jstring js = (jstring) (*env)->GetObjectArrayElement(env, commands, i);
-        argv[i] = (char*) (*env)->GetStringUTFChars(env, js, 0);
+        argv[i] = (char *) (*env)->GetStringUTFChars(env, js, 0);
         LOGD("Kit argv %s\n", argv[i]);
     }
     return runFfempeg(argc, argv);
 }
+
 
 #ifdef __cplusplus
 }
