@@ -4803,11 +4803,13 @@ static void log_callback_null(void *ptr, int level, const char *fmt, va_list vl)
     av_log_format_line(ptr, level, fmt, vl, line, sizeof(line), &print_prefix);
     strcpy(prev, line);
     if (level <= AV_LOG_WARNING) {
-        XLOGE("%s", line);
+        XLOGE("%s\n", line);
     } else {
-        XLOGD("%s", line);
-        progress(line);
+        XLOGD("%s\n", line);
     }
+    progress(line);
+
+
 }
 
 int runFfempeg(int argc, char **argv) {

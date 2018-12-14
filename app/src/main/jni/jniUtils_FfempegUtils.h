@@ -12,8 +12,8 @@ extern "C" {
  * Method:    runFfempeg
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_jniUtils_FfempegUtils_runFfempeg
-  (JNIEnv *, jclass);
+JNIEXPORT jint JNICALL Java_jniUtils_FfempegUtils_runFfempeg
+  (JNIEnv *, jobject);
 
 void progress(char* line);
 

@@ -28,8 +28,9 @@ public class MainActivity extends AppCompatActivity {
          */
         String cmd = "-y " + "-ss 2 -i " + mVideoPath + " -r 20 -t 10 " + currentOutputVideoPath;
         String[] commands = cmd.split(" ");
-        int ret = FfempegUtils.runFfempeg(commands);
-        Log.i("MDL","ret:" + ret);
+        FfempegUtils ffempegUtils = new FfempegUtils();
+        ffempegUtils.runFfempeg(commands);
+    //    Log.i("MDL","ret:" + ret);
 
 
     }

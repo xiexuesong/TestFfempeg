@@ -25,13 +25,27 @@ extern "C" {
  *logcat  只能输出error 和 info
  */
 
-void progress(char* line){
+JNIEnv *jniEnv = NULL;
+jobject jobject_global = NULL;
+
+void progress(char *line) {
+    jclass jclass_global = (*jniEnv)->FindClass(jniEnv, "jniUtils/FfempegUtils");
+    jmethodID jMethod_progress = (*jniEnv)->GetMethodID(jniEnv, jclass_global, "progress",
+                                                        "(Ljava/lang/String;)V");
+
+    jstring jstring1 = (*jniEnv)->NewStringUTF(jniEnv, line);
+    (*jniEnv)->CallVoidMethod(jniEnv, jobject_global, jMethod_progress,
+                              jstring1);
 
 }
 
 JNIEXPORT jint JNICALL Java_jniUtils_FfempegUtils_runFfempeg
-        (JNIEnv *env, jclass jclass, jobjectArray commands) {
+        (JNIEnv *env, jobject jobject, jobjectArray commands) {
 //FFmpeg av_log() callback
+    jniEnv = env;
+    jobject_global = jobject;
+
+
     int argc = (*env)->GetArrayLength(env, commands);
     char *argv[argc];
 

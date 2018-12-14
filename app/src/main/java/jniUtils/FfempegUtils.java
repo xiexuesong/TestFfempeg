@@ -1,5 +1,7 @@
 package jniUtils;
 
+import android.util.Log;
+
 /**
  * Created by admin on 2018/12/7.
  */
@@ -17,7 +19,12 @@ public class FfempegUtils {
         System.loadLibrary("ffempeg");
     }
 
-    public static native int runFfempeg(String[] commonds);
-    public static native String getCallBackProgressLog();
+    public native int runFfempeg(String[] commonds);
+
+
+    public void progress(String progress){
+        Log.i("MDL","progress:" + progress);
+        //return progress;
+    }
 
 }
