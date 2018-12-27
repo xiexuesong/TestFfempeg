@@ -32,6 +32,7 @@ char* time2 = "time=";
 void progress(char *line) {
     char* p = strstr(line,time2);
     if(p != NULL) {
+        //输出日志格式
         __android_log_print(ANDROID_LOG_DEBUG,"MDL","%s\n",line);
         jclass jclass_global = (*jniEnv)->FindClass(jniEnv, "jniUtils/FfempegUtils");
         jmethodID jMethod_progress = (*jniEnv)->GetMethodID(jniEnv, jclass_global, "progress",
