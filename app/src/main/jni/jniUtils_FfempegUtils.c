@@ -27,16 +27,24 @@ extern "C" {
 
 JNIEnv *jniEnv = NULL;
 jobject jobject_global = NULL;
+char* time2 = "time=";
 
 void progress(char *line) {
-    jclass jclass_global = (*jniEnv)->FindClass(jniEnv, "jniUtils/FfempegUtils");
-    jmethodID jMethod_progress = (*jniEnv)->GetMethodID(jniEnv, jclass_global, "progress",
-                                                        "(Ljava/lang/String;)V");
+    char* p = strstr(line,time2);
+    if(p != NULL) {
+        __android_log_print(ANDROID_LOG_DEBUG,"MDL","%s\n",line);
+        jclass jclass_global = (*jniEnv)->FindClass(jniEnv, "jniUtils/FfempegUtils");
+        jmethodID jMethod_progress = (*jniEnv)->GetMethodID(jniEnv, jclass_global, "progress",
+                                                            "(Ljava/lang/String;)V");
 
-    jstring jstring1 = (*jniEnv)->NewStringUTF(jniEnv, line);
-    (*jniEnv)->CallVoidMethod(jniEnv, jobject_global, jMethod_progress,
-                              jstring1);
+        jstring jString1 = (*jniEnv)->NewStringUTF(jniEnv, line);
 
+        (*jniEnv)->CallVoidMethod(jniEnv, jobject_global, jMethod_progress,
+                                  jString1);
+        //释放内存
+        (*jniEnv)->ReleaseStringUTFChars(jniEnv, jString1, line);
+        (*jniEnv)->DeleteLocalRef(jniEnv, jString1);
+    }
 }
 
 JNIEXPORT jint JNICALL Java_jniUtils_FfempegUtils_runFfempeg
@@ -56,7 +64,13 @@ JNIEXPORT jint JNICALL Java_jniUtils_FfempegUtils_runFfempeg
         argv[i] = (char *) (*env)->GetStringUTFChars(env, js, 0);
         LOGD("Kit argv %s\n", argv[i]);
     }
-    return runFfempeg(argc, argv);
+    int result = runFfempeg(argc,argv);
+    //释放内存
+    for (i = 0; i < argc; i++) {
+        free(argv[i]);
+    }
+    //free(argv);
+    return result;
 }
 
 
