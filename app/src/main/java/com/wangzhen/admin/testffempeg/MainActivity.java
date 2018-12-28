@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import jniUtils.FfempegCmdUtils;
 import jniUtils.FfempegUtils;
+import thread.ThreadPoolProxy;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,22 +24,24 @@ public class MainActivity extends AppCompatActivity {
         final String currentOutputVideoPath = PATH + "clip.mp4";
         int videoWidth = 1920;
         int videoHeight = 1080;
+        final String size  = "300*300";
 
         /**
          *  + "-s " + videoWidth + "x" + videoHeight + "
          */
-        //由于剪切视频是耗时操作,所以异步操作
-        new Thread(){
+        final String[] cmd1 = FfempegCmdUtils.clipVideo("2","10",25,mVideoPath,currentOutputVideoPath,size);
+        String path = Environment.getExternalStorageDirectory() + "/apeng/pic/";
+        String[] cmd2 = FfempegCmdUtils.videoToImages("2","10",mVideoPath,path,1);
+        final String[][] cmdArray = {cmd1,cmd2};
+        final FfempegUtils ffempegUtils = new FfempegUtils();
+        ThreadPoolProxy.getFixedThreadPool(1).execute(new Runnable() {
             @Override
             public void run() {
-                super.run();
-                //剪切视频
-                String cmd = "-y " + "-ss 2 -i " + mVideoPath + " -r 20 -t 10 " + currentOutputVideoPath;
-                String[] commands = cmd.split(" ");
-                FfempegUtils ffempegUtils = new FfempegUtils();
-                ffempegUtils.runFfempeg(commands);
+                for(int i = 0 ; i < cmdArray.length; i++){
+                    ffempegUtils.runFfempeg(cmdArray[i]);
+                }
             }
-        }.start();
+        });
 
     //    Log.i("MDL","ret:" + ret);
 

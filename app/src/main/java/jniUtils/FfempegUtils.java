@@ -23,7 +23,7 @@ public class FfempegUtils {
 
 
     public void progress(String progress){
-        Log.i("MDL","progress:" + progress);
+     //   Log.i("MDL","progress:" + progress);
         //return progress;
     }
 

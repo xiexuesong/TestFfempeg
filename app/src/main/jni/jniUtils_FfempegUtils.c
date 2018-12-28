@@ -27,22 +27,29 @@ extern "C" {
 
 JNIEnv *jniEnv = NULL;
 jobject jobject_global = NULL;
-char* time2 = "time=";
+char *time2 = "time=";
 
 void progress(char *line) {
-    char* p = strstr(line,time2);
-    if(p != NULL) {
+    char *p = strstr(line, time2);
+    //这里不清楚为什么 释放没有效果 ，所以加了一个判断 返回的字符指针是否包含"time=",减少返回的字符指针
+    //不加这个判断是 ，会报内存溢出的异常，但是奇怪的是明明已经释放了内存引用
+    if (p != NULL) {
         //输出日志格式
-        __android_log_print(ANDROID_LOG_DEBUG,"MDL","%s\n",line);
+        //   __android_log_print(ANDROID_LOG_DEBUG,"MDL","%s\n",line);
+        //获得jclass对象
         jclass jclass_global = (*jniEnv)->FindClass(jniEnv, "jniUtils/FfempegUtils");
+        //获得FfempegUtils中的progress方法的 jmethodID
         jmethodID jMethod_progress = (*jniEnv)->GetMethodID(jniEnv, jclass_global, "progress",
                                                             "(Ljava/lang/String;)V");
-
+        //字符指针转换成字符串
         jstring jString1 = (*jniEnv)->NewStringUTF(jniEnv, line);
-
+        //调用FfempegUtils的progress方法
         (*jniEnv)->CallVoidMethod(jniEnv, jobject_global, jMethod_progress,
                                   jString1);
         //释放内存
+
+        //  (*jniEnv)->DeleteLocalRef(jniEnv,jMethod_progress);
+
         (*jniEnv)->ReleaseStringUTFChars(jniEnv, jString1, line);
         (*jniEnv)->DeleteLocalRef(jniEnv, jString1);
     }
@@ -54,18 +61,15 @@ JNIEXPORT jint JNICALL Java_jniUtils_FfempegUtils_runFfempeg
     jniEnv = env;
     jobject_global = jobject;
 
-
     int argc = (*env)->GetArrayLength(env, commands);
     char *argv[argc];
 
-    LOGD("Kit argc %d\n", argc);
     int i;
     for (i = 0; i < argc; i++) {
         jstring js = (jstring) (*env)->GetObjectArrayElement(env, commands, i);
         argv[i] = (char *) (*env)->GetStringUTFChars(env, js, 0);
-        LOGD("Kit argv %s\n", argv[i]);
     }
-    int result = runFfempeg(argc,argv);
+    int result = runFfempeg(argc, argv);
     //释放内存
     for (i = 0; i < argc; i++) {
         free(argv[i]);
