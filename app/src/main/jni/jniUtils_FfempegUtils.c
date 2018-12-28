@@ -30,7 +30,7 @@ jobject jobject_global = NULL;
 char *time2 = "time=";
 
 void progress(char *line) {
-    char *p = strstr(line, time2);
+    /*char *p = strstr(line, time2);
     //这里不清楚为什么 释放没有效果 ，所以加了一个判断 返回的字符指针是否包含"time=",减少返回的字符指针
     //不加这个判断是 ，会报内存溢出的异常，但是奇怪的是明明已经释放了内存引用
     if (p != NULL) {
@@ -53,6 +53,7 @@ void progress(char *line) {
         (*jniEnv)->ReleaseStringUTFChars(jniEnv, jString1, line);
         (*jniEnv)->DeleteLocalRef(jniEnv, jString1);
     }
+    free(line);*/
 }
 
 JNIEXPORT jint JNICALL Java_jniUtils_FfempegUtils_runFfempeg
@@ -71,10 +72,7 @@ JNIEXPORT jint JNICALL Java_jniUtils_FfempegUtils_runFfempeg
     }
     int result = runFfempeg(argc, argv);
     //释放内存
-    for (i = 0; i < argc; i++) {
-        free(argv[i]);
-    }
-    //free(argv);
+    free(argv);
     return result;
 }
 

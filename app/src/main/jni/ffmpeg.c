@@ -4790,7 +4790,7 @@ static int64_t getmaxrss(void) {
     GetProcessMemoryInfo(proc, &memcounters, sizeof(memcounters));
     return memcounters.PeakPagefileUsage;
 #else
-    return 0;
+    return 0;ndk
 #endif
 }
 
@@ -4807,7 +4807,10 @@ static void log_callback_null(void *ptr, int level, const char *fmt, va_list vl)
     } else {
         XLOGD("%s\n", line);
     }
-    progress(line);
+  //  progress(line);
+    //free(line);
+
+
 
 
 }

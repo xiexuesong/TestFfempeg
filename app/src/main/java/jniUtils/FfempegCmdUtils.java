@@ -47,6 +47,19 @@ public class FfempegCmdUtils {
         return cmd.split(" ");
     }
 
+    /**
+     * ffmpeg -i input.avi -fs 10MB output.mp4
+     * @param inputPath
+     * @param outPutPath
+     * @param size
+     * @return
+     */
+    public static String[] compressToSpecifiedSize(String inputPath ,String outPutPath , String size){
+        String cmd = "ffmpeg -i %s -fs %s %s";
+        cmd = String.format(Locale.CHINESE,cmd,inputPath,size,outPutPath);
+        return cmd.split(" ");
+    }
+
 
 
 
