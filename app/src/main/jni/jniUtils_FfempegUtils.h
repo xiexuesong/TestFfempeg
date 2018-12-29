@@ -13,7 +13,7 @@ extern "C" {
  * Signature: ()V
  */
 JNIEXPORT jint JNICALL Java_jniUtils_FfempegUtils_runFfempeg
-  (JNIEnv *, jobject);
+  (JNIEnv *, jobject,jobjectArray commonds);
 
 void progress(char* line);
 

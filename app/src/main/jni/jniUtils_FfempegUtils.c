@@ -25,9 +25,20 @@ extern "C" {
  *logcat  只能输出error 和 info
  */
 
-JNIEnv *jniEnv = NULL;
+JavaVM *javaVM = NULL;
 jobject jobject_global = NULL;
 char *time2 = "time=";
+
+jint JNI_OnLoad(JavaVM *vm, void *reserved) {
+    javaVM = vm;
+    JNIEnv *jniEnv = NULL;
+    //获取环境
+    jint ret = (*vm)->GetEnv(vm, (void **) &jniEnv, JNI_VERSION_1_6);
+    if (ret != JNI_OK) {
+        return -1;
+    }
+    return JNI_VERSION_1_6;
+}
 
 void progress(char *line) {
     char *p = strstr(line, time2);
@@ -36,6 +47,9 @@ void progress(char *line) {
     if (p != NULL) {
         //输出日志格式
         //   __android_log_print(ANDROID_LOG_DEBUG,"MDL","%s\n",line);
+        JNIEnv *jniEnv = NULL;
+        (*javaVM)->AttachCurrentThread(javaVM, &jniEnv, NULL);
+        // (*javaVM)->GetEnv(javaVM,(void **)&jniEnv,JNI_VERSION_1_6);
         //获得jclass对象
         jclass jclass_global = (*jniEnv)->FindClass(jniEnv, "jniUtils/FfempegUtils");
         //获得FfempegUtils中的progress方法的 jmethodID
@@ -50,13 +64,13 @@ void progress(char *line) {
         //释放内存
         (*jniEnv)->ReleaseStringUTFChars(jniEnv, jString1, line2);
         (*jniEnv)->DeleteLocalRef(jniEnv, jString1);
+        //(*jniEnv)->DeleteLocalRef(jniEnv,jclass_global);
     }
 }
 
 JNIEXPORT jint JNICALL Java_jniUtils_FfempegUtils_runFfempeg
         (JNIEnv *env, jobject jobject, jobjectArray commands) {
 //FFmpeg av_log() callback
-    jniEnv = env;
     jobject_global = jobject;
 
     int argc = (*env)->GetArrayLength(env, commands);
