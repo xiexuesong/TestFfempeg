@@ -4807,12 +4807,7 @@ static void log_callback_null(void *ptr, int level, const char *fmt, va_list vl)
     } else {
         XLOGD("%s\n", line);
     }
-  //  progress(line);
-    //free(line);
-
-
-
-
+    progress(line);
 }
 
 int runFfempeg(int argc, char **argv) {
