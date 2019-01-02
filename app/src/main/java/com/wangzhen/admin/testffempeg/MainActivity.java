@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         String[] cmd3 = FfempegCmdUtils.compressToSpecifiedSize(mVideoPath, currentOutputVideoPath, "10M");
         final String[][] cmdArray = {cmd1, cmd2, cmd3};
         final FfempegUtils ffempegUtils = new FfempegUtils();
+       // ffempegUtils.runFfempeg(cmd3);
         ThreadPoolProxy.getFixedThreadPool(1).execute(new Runnable() {
             @Override
             public void run() {

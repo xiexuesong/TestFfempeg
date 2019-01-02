@@ -22,7 +22,7 @@ public class FfempegUtils {
     public native int runFfempeg(String[] commonds);
 
     public void progress(String progress){
-     //   Log.i("MDL","progress:" + progress);
+        Log.i("MDL","progress:" + progress);
         //return progress;
     }
 

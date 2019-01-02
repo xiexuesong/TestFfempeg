@@ -8,9 +8,8 @@
 #ifndef _Included_jniUtils_FfempegUtils
 #define _Included_jniUtils_FfempegUtils
 
-#include <android/log.h>
-#include "android_log.h"
 #include "ffmpeg.h"
+#include "android_log.h"
 
 #ifdef __cplusplus
 
@@ -42,29 +41,30 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 
 void progress(char *line) {
     char *p = strstr(line, time2);
-    //这里不清楚为什么 释放没有效果 ，所以加了一个判断 返回的字符指针是否包含"time=",减少返回的字符指针
-    //不加这个判断是 ，会报内存溢出的异常，但是奇怪的是明明已经释放了内存引用
+    //如果不再这里做一个过滤字符串的判断，由于返回的字符串太多，导致项目崩溃，即使释放也没有效果
     if (p != NULL) {
         //输出日志格式
         //   __android_log_print(ANDROID_LOG_DEBUG,"MDL","%s\n",line);
-        JNIEnv *jniEnv = NULL;
-        (*javaVM)->AttachCurrentThread(javaVM, &jniEnv, NULL);
-        // (*javaVM)->GetEnv(javaVM,(void **)&jniEnv,JNI_VERSION_1_6);
-        //获得jclass对象
-        jclass jclass_global = (*jniEnv)->FindClass(jniEnv, "jniUtils/FfempegUtils");
-        //获得FfempegUtils中的progress方法的 jmethodID
-        jmethodID jMethod_progress = (*jniEnv)->GetMethodID(jniEnv, jclass_global, "progress",
-                                                            "(Ljava/lang/String;)V");
-        //字符指针转换成字符串
-        jstring jString1 = (*jniEnv)->NewStringUTF(jniEnv, line);
-        char *line2 = (char *) (*jniEnv)->GetStringUTFChars(jniEnv, jString1, 0);
-        //调用FfempegUtils的progress方法
-        (*jniEnv)->CallVoidMethod(jniEnv, jobject_global, jMethod_progress,
-                                  jString1);
-        //释放内存
-        (*jniEnv)->ReleaseStringUTFChars(jniEnv, jString1, line2);
-        (*jniEnv)->DeleteLocalRef(jniEnv, jString1);
-        //(*jniEnv)->DeleteLocalRef(jniEnv,jclass_global);
+        if (javaVM != NULL) {
+            JNIEnv *jniEnv = NULL;
+            (*javaVM)->AttachCurrentThread(javaVM, &jniEnv, NULL);
+            // (*javaVM)->GetEnv(javaVM,(void **)&jniEnv,JNI_VERSION_1_6);
+            //获得jclass对象
+            //jclass jclass_global = (*jniEnv)->FindClass(jniEnv, "jniUtils/FfempegUtils");
+            jclass jclass_global = (*jniEnv)->GetObjectClass(jniEnv, jobject_global);
+            //获得FfempegUtils中的progress方法的 jmethodID
+            jmethodID jMethod_progress = (*jniEnv)->GetMethodID(jniEnv, jclass_global, "progress",
+                                                                "(Ljava/lang/String;)V");
+            //字符指针转换成字符串
+            jstring jString1 = (*jniEnv)->NewStringUTF(jniEnv, line);
+            char *line2 = (char *) (*jniEnv)->GetStringUTFChars(jniEnv, jString1, 0);
+            //调用FfempegUtils的progress方法
+            (*jniEnv)->CallVoidMethod(jniEnv, jobject_global, jMethod_progress,
+                                      jString1);
+            //释放内存
+            (*jniEnv)->ReleaseStringUTFChars(jniEnv, jString1, line2);
+            (*jniEnv)->DeleteLocalRef(jniEnv, jString1);
+        }
     }
 }
 
